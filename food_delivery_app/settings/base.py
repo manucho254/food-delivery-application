@@ -1,20 +1,29 @@
 from pathlib import Path
+from django.contrib import messages
+import environ
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Take environment variables from .env file
+environ.Env.read_env(os.path.join(BASE_DIR, '../.env'))
+
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-3!c@&mryw*$p@l%j+*1th&lho1q!_mw$8g)ze1um0rk3g^@&ff'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
+MESSAGE_TAGS = {
+    messages.DEBUG: "alert-info",
+    messages.INFO : "alert-info",
+    messages.SUCCESS: "alert-success",
+    messages.WARNING: "alert-warning",
+    messages.ERROR: "alert-danger",
+}
 
 # Application definition
 
@@ -27,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     #my apps
+    'apps.core',
     'apps.accounts',
     'apps.restaurants',
 ]
@@ -68,7 +78,7 @@ WSGI_APPLICATION = 'food_delivery_app.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / '../db.sqlite3',
     }
 }
 
