@@ -1,9 +1,10 @@
 from django.db import models
-from django.contrib.auth.models import User
 from django.utils import timezone
 from random import randrange
 from uuid import uuid4
 from django.template.defaultfilters import slugify
+from apps.accounts.models import User
+import math
 
 class Restaurant(models.Model):
     restaurant_types =  (
@@ -22,6 +23,11 @@ class Restaurant(models.Model):
     def __str__(self):
         return "{}".format(self.restaurant_name)
     
+    def get_rating(self):
+        ratings = len(self.ratings)
+        rating = math.floor(ratings / 10) / 2
+        return rating
+    
     def save(self, *args, **kwargs):
         unique_uuid = str(uuid4()).split("-")[4]
         self.restaurant_slug = slugify("{}".format(unique_uuid))
@@ -36,6 +42,7 @@ class Product(models.Model):
     product_price = models.DecimalField(max_digits=6, decimal_places=2)
     product_category = models.ManyToManyField('Category', blank=True, related_name="product_categories")
     product_slug = models.SlugField(max_length=200)
+    product_rating = models.ManyToManyField(User,  blank=True)
     date = models.DateTimeField(default=timezone.now)
     
     class Meta:
